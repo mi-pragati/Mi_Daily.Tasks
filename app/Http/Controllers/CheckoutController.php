@@ -68,21 +68,22 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         // Force JSON response
-        $request->headers->set('Accept', 'application/json');
+       $request->headers->set('Accept', 'application/json');
 
-        // Validate inputs
-        try {
-            $request->validate([
-                'name'           => 'required|string|max:255',
-                'email'          => 'required|email|max:255',
-                'address'        => 'required|string|max:500',
-                'phone'          => 'required|string|max:20',
-                'payment_method' => 'required|string|in:cod,stripe',
-                'stripe_method'  => 'nullable|string|in:card',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        }
+        $request->validate([
+            'name'           => 'required|string|max:255',
+            'email'          => 'required|email|max:255',
+            'phone'          => 'required|string|max:20',
+            'country'        => 'required|string|max:100',
+            'state'          => 'required|string|max:100',
+            'city'           => 'required|string|max:100',
+            'pincode'        => 'required|string|max:20',
+            'street'         => 'required|string|max:255',
+            'payment_method' => 'required|string|in:cod,stripe',
+            'stripe_method'  => 'nullable|string|in:card',
+        ]);
+
+        $fullAddress = "{$request->street}, {$request->city}, {$request->state}, {$request->country} - {$request->pincode}";
 
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
         if (!$cart || $cart->items->isEmpty()) {
@@ -97,8 +98,8 @@ class CheckoutController extends Controller
             'user_id'        => Auth::id(),
             'name'           => $request->name,
             'email'          => $request->email,
-            'address'        => $request->address,
             'phone'          => $request->phone,
+            'address'  => $fullAddress,
             'subtotal'       => $subtotal,
             'total'          => $total,
             'status'         => 'Pending',   // Admin control
@@ -172,8 +173,10 @@ class CheckoutController extends Controller
     /**
      * Store payment after Stripe confirmation
      */
+    
     public function storePayment(Request $request)
     {
+
         $request->validate([
             'order_id' => 'required|exists:orders,id',
             'payment_id' => 'required|string',
@@ -191,7 +194,12 @@ class CheckoutController extends Controller
             'status' => $request->status,
             'payment_method' => $request->payment_method,
         ]);
-
+        $order = Order::find($request->order_id);
+    $order->update([
+        'payment_id' => $request->payment_id,
+        'payment_method' => $request->payment_method,
+        'status' => 'Paid',
+    ]);
         // Clear cart after successful payment
         $cart = Cart::where('user_id', Auth::id())->first();
         if ($cart) {

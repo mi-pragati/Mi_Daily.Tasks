@@ -14,25 +14,20 @@ $isAuthScreen = request()->routeIs('login') || request()->routeIs('register');
 $minimalNav   = $isAuthScreen || (!empty($forceMinimal) && $forceMinimal);
 
 // Normal controls (used when NOT minimal)
-$wishlistCount = session('wishlist.count')
-    ?? (is_array(session('wishlist.items')) ? count(session('wishlist.items')) : 0);
-$cartCount = collect(session('cart.items', []))->sum('qty');
+$cartItems = collect(session('cart.items', []))->filter(function($item){
+    // Ensure it's an array and qty is positive
+    return is_array($item) && isset($item['qty']) && $item['qty'] > 0;
+});
 
+// Count total quantity safely
+$cartCount = $cartItems->sum(fn($item) => (int)$item['qty']);
 // Show category dropdown ONLY on product pages (never on Home)
 $showCatDropdown = request()->routeIs('products.*');
 
 // Home-only preview data
-$wishlistProducts = collect();
 $cartProducts     = collect();
 $cartQtyById      = collect();
 
-if ($isHome && !$minimalNav) {
-  $wishlistIds = collect(session('wishlist.items', []))
-    ->map(fn($v) => (int) (is_array($v) ? ($v['id'] ?? $v['product_id'] ?? null) : $v))
-    ->filter()->unique()->take(8)->values()->all();
-  if (!empty($wishlistIds)) {
-    $wishlistProducts = Product::whereIn('id', $wishlistIds)->get();
-  }
 
   $cartItems = collect(session('cart.items', []));
   $cartIds = $cartItems
@@ -46,7 +41,6 @@ if ($isHome && !$minimalNav) {
   if (!empty($cartIds)) {
     $cartProducts = Product::whereIn('id', $cartIds)->get();
   }
-}
 @endphp
 
 <style>
@@ -124,36 +118,23 @@ if ($isHome && !$minimalNav) {
     {{-- RIGHT --}}
     @if(!$minimalNav)
       <ul class="navbar-nav flex-row align-items-center">
-        {{-- (Home-only) Wishlist + Cart previews --}}
-        @if($isHome)
-          {{-- Wishlist (only for logged in users) --}}
-          @auth
-            <li class="nav-item me-2 position-relative">
-  <a class="icon-btn" href="{{ route('wishlist.index') }}" title="Wishlist" aria-label="Wishlist">
+       
+  {{-- Cart (always visible on home) --}}
+
+      @if($isHome)
+<li class="nav-item me-3">
+  <a class="icon-btn" href="{{ route('cart.index') }}" title="Cart" aria-label="Cart">
     <svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 2.748-.717-.737C5.6-.281 8 .522 8 3.314 8 .522 10.4-.28 12.717 2.01 15.6 4.905 8 12 8 12s-7.6-7.095-4.717-9.99z"/>
+      <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h2A1.5 1.5 0 0 1 14 5.5v8A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-8A1.5 1.5 0 0 1 3.5 4h2v-.5A2.5 2.5 0 0 1 8 1Zm1.5 3v-.5a1.5 1.5 0 1 0-3 0V4h3Z"/>
     </svg>
-    <span id="wishlist-count-badge"
-          class="icon-badge {{ $wishlistCount > 0 ? '' : 'd-none' }}">
-      {{ $wishlistCount }}
-    </span>
+    @if($cartCount > 0)
+      <span id="cart-badge" class="icon-badge">{{ $cartCount }}</span>
+    @endif
   </a>
 </li>
+@endif
 
-          @endauth
 
-          {{-- Cart (always visible on home) --}}
-          <li class="nav-item me-3">
-            <a class="icon-btn" href="{{ route('cart.index') }}" title="Cart" aria-label="Cart">
-              <svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h2A1.5 1.5 0 0 1 14 5.5v8A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-8A1.5 1.5 0 0 1 3.5 4h2v-.5A2.5 2.5 0 0 1 8 1Zm1.5 3v-.5a1.5 1.5 0 1 0-3 0V4h3Z"/>
-              </svg>
-              <span id="cart-badge" class="icon-badge {{ $cartCount>0 ? '' : 'd-none' }}">
-                {{ $cartCount }}
-              </span>
-            </a>
-          </li>
-        @endif
 
         @guest
           <li class="nav-item me-2"><a class="nav-link" href="{{ route('login') }}">Login</a></li>

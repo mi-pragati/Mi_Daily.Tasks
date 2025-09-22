@@ -88,7 +88,7 @@ use App\Models\Order;
 
                     @if($return)
                         @if($return->status === 'Return Pending')
-                            <span class="badge border-warning text-dark">Return Pending</span>
+                            <span class="badge border border-warning text-dark">Return Pending</span>
                         @elseif($return->status === 'Returned')
                             <span class="badge border border-success text-success">Returned</span>
                         @elseif($return->status === 'Rejected')
@@ -98,8 +98,6 @@ use App\Models\Order;
                         <span class="badge border border-warning text-dark">{{ $order->delivery_status ?? 'Pending' }}</span>
                     @endif
                 </td>
-
-
                 {{-- Action --}}
                 <td class="text-center">
                     <a href="{{ route('admin.orders.show', $order->id) }}" class="btn p-0 border-0 bg-transparent focus-ring-0" title="View Order">

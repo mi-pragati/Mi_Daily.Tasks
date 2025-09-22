@@ -65,19 +65,54 @@
             <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" class="form-control" required>
         </div>
 
-        <div class="mb-3 position-relative">
-            <label for="address" class="form-label">Delivery Address</label>
-            <input type="text" class="form-control" id="address" name="address" placeholder="Type your address..." autocomplete="off" required>
-            <ul id="address-suggestions" class="list-group position-absolute w-100" style="z-index:1000; display:none; max-height:200px; overflow-y:auto;"></ul>
-        </div>
-
-        <input type="hidden" id="latitude" name="latitude">
-        <input type="hidden" id="longitude" name="longitude">
-
-        <div class="mb-3">
+          <div class="mb-3">
             <label>Phone</label>
-            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control" required>
+            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control" required maxlength="10" 
+           pattern="\d{10}" 
+           title="Please enter exactly 10 digits">
         </div>
+
+        {{-- Country --}}
+<div class="mb-3">
+    <label for="country" class="form-label">Country</label>
+    <select id="country" name="country" class="form-control" required>
+        <option value="">Select Country</option>
+    </select>
+</div>
+
+{{-- State --}}
+<div class="mb-3">
+    <label for="state" class="form-label">State</label>
+    <select id="state" name="state" class="form-control" required disabled>
+        <option value="">Select State</option>
+    </select>
+</div>
+
+{{-- City --}}
+<div class="mb-3">
+    <label for="city" class="form-label">City</label>
+    <select id="city" name="city" class="form-control" required disabled>
+        <option value="">Select City</option>
+    </select>
+</div>
+
+{{-- Pincode --}}
+<div class="mb-3">
+    <label for="pincode" class="form-label">Pincode</label>
+    <input type="text" id="pincode" name="pincode" class="form-control" 
+           placeholder="Enter Pincode" required 
+           maxlength="6" pattern="\d{6}" 
+           title="Please enter a valid 6-digit pincode">
+    @error('pincode') <div class="text-danger small">{{ $message }}</div> @enderror
+</div>
+
+
+{{-- Street Address --}}
+<div class="mb-3">
+    <label for="street" class="form-label">Street Address</label>
+    <input type="text" id="street" name="street" class="form-control" placeholder="Flat / House No, Road, Area" required>
+</div>
+
 
         {{-- Payment Method --}}
         <h4>Payment Method</h4>
@@ -105,47 +140,107 @@
 {{-- ================== Address Autocomplete ================== --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const addressInput = document.getElementById("address");
-    const suggestionsList = document.getElementById("address-suggestions");
-    const latInput = document.getElementById("latitude");
-    const lonInput = document.getElementById("longitude");
-    let timeout = null;
+    const countrySelect = document.getElementById("country");
+    const stateSelect   = document.getElementById("state");
+    const citySelect    = document.getElementById("city");
+    const pincodeSelect = document.getElementById("pincode");
 
-    addressInput.addEventListener("input", function () {
-        clearTimeout(timeout);
-        const query = this.value.trim();
-        if (query.length < 3) { suggestionsList.style.display = "none"; return; }
+    // 1. Load Countries
+    fetch("https://countriesnow.space/api/v0.1/countries/positions")
+        .then(res => res.json())
+        .then(data => {
+            data.data.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.name;
+                opt.textContent = c.name;
+                countrySelect.appendChild(opt);
+            });
+        });
 
-        timeout = setTimeout(() => {
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(data => {
-                    suggestionsList.innerHTML = "";
-                    if (data.length > 0) {
-                        suggestionsList.style.display = "block";
-                        data.forEach(place => {
-                            const li = document.createElement("li");
-                            li.classList.add("list-group-item", "list-group-item-action");
-                            li.textContent = place.display_name;
-                            li.addEventListener("click", function () {
-                                addressInput.value = place.display_name;
-                                latInput.value = place.lat;
-                                lonInput.value = place.lon;
-                                suggestionsList.style.display = "none";
-                            });
-                            suggestionsList.appendChild(li);
-                        });
-                    } else suggestionsList.style.display = "none";
-                })
-                .catch(() => suggestionsList.style.display = "none");
-        }, 400);
-    });
+    // 2. On Country Change → Load States
+    countrySelect.addEventListener("change", function () {
+        stateSelect.innerHTML = '<option value="">Select State</option>';
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        pincodeSelect.innerHTML = '<option value="">Select Pincode</option>';
+        stateSelect.disabled = true;
+        citySelect.disabled = true;
+        pincodeSelect.disabled = true;
 
-    document.addEventListener("click", function (event) {
-        if (!addressInput.contains(event.target) && !suggestionsList.contains(event.target)) {
-            suggestionsList.style.display = "none";
+        if (this.value) {
+            fetch("https://countriesnow.space/api/v0.1/countries/states", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ country: this.value })
+            })
+            .then(res => res.json())
+            .then(data => {
+                data.data.states.forEach(s => {
+                    const opt = document.createElement("option");
+                    opt.value = s.name;
+                    opt.textContent = s.name;
+                    stateSelect.appendChild(opt);
+                });
+                stateSelect.disabled = false;
+            });
         }
     });
+
+    // 3. On State Change → Load Cities
+    stateSelect.addEventListener("change", function () {
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        pincodeSelect.innerHTML = '<option value="">Select Pincode</option>';
+        citySelect.disabled = true;
+        pincodeSelect.disabled = true;
+
+        if (this.value) {
+            fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ country: countrySelect.value, state: this.value })
+            })
+            .then(res => res.json())
+            .then(data => {
+                data.data.forEach(city => {
+                    const opt = document.createElement("option");
+                    opt.value = city;
+                    opt.textContent = city;
+                    citySelect.appendChild(opt);
+                });
+                citySelect.disabled = false;
+            });
+        }
+    });
+
+   // 4. On City Change → Load Pincodes from public API
+citySelect.addEventListener("change", function () {
+    pincodeSelect.innerHTML = '<option value="">Select Pincode</option>';
+    pincodeSelect.disabled = true;
+
+    const city = this.value;
+    const state = stateSelect.value;
+
+    if (city && state) {
+        fetch(`https://api.postalpincode.in/postoffice/${city}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data[0].Status === "Success") {
+                    data[0].PostOffice.forEach(p => {
+                        if (p.State.toLowerCase() === state.toLowerCase()) { // optional filter by state
+                            const opt = document.createElement("option");
+                            opt.value = p.Pincode;
+                            opt.textContent = p.Pincode;
+                            pincodeSelect.appendChild(opt);
+                        }
+                    });
+                    pincodeSelect.disabled = false;
+                } else {
+                    console.warn("No pincodes found for this city.");
+                }
+            })
+            .catch(err => console.error("Error fetching pincodes:", err));
+    }
+});
+
 });
 </script>
 
@@ -192,8 +287,12 @@ document.addEventListener("DOMContentLoaded", function () {
             payment_method: "cod",
             name: document.querySelector('input[name="name"]').value,
             email: document.querySelector('input[name="email"]').value,
-            address: document.querySelector('input[name="address"]').value,
             phone: document.querySelector('input[name="phone"]').value,
+            country: document.querySelector('select[name="country"]').value,
+            state: document.querySelector('select[name="state"]').value,
+            city: document.querySelector('select[name="city"]').value,
+            pincode: document.querySelector('select[name="pincode"]').value,
+            street: document.querySelector('input[name="street"]').value,
         };
 
         const res = await fetch("{{ route('checkout.placeOrder') }}", {
@@ -221,8 +320,12 @@ document.addEventListener("DOMContentLoaded", function () {
             stripe_method: "card",
             name: document.querySelector('input[name="name"]').value,
             email: document.querySelector('input[name="email"]').value,
-            address: document.querySelector('input[name="address"]').value,
             phone: document.querySelector('input[name="phone"]').value,
+            country: document.querySelector('select[name="country"]').value,
+            state: document.querySelector('select[name="state"]').value,
+            city: document.querySelector('select[name="city"]').value,
+            pincode: document.querySelector('select[name="pincode"]').value,
+            street: document.querySelector('input[name="street"]').value,
         };
 
         try {

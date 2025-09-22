@@ -144,6 +144,9 @@ public function submitReturn(Request $request, Order $order)
         'image' => $request->hasFile('image') ? $request->file('image')->store('returns', 'public') : null,
         'status' => 'Pending', // admin approval pending
     ]);
+    $order->update([
+    'return_status' => 'Pending',
+]);
 
     return redirect()->route('customer.orders.index')
         ->with('success', 'Return request submitted. It will be initiated once admin allows.');

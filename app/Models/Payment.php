@@ -10,7 +10,7 @@ class Payment extends Model
         'order_id',
         'user_id',
         'payment_id',
-        'method',
+        'payment_method',
         'amount',
         'currency',
         'status',

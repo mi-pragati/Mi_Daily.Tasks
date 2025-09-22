@@ -10,7 +10,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'name', 'email', 'phone', 'address', 'subtotal', 'total', 'status','delivery_status', 'payment_method','payment_details','is_reordered','return_status',
+        'user_id', 'name', 'email', 'phone', 'address', 'subtotal', 'total', 'status','delivery_status', 'payment_method', 'payment_id','payment_details','is_reordered','return_status',
     ];
 
     const STATUS_PENDING   = 'Pending';

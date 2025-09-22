@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
+public function up()
 {
     Schema::table('orders', function (Blueprint $table) {
-        $table->string('payment_method')->nullable()->after('status');
+        if (!Schema::hasColumn('orders', 'payment_method')) {
+            $table->string('payment_method')->nullable()->after('status');
+        }
     });
 }
+
 
 public function down()
 {
