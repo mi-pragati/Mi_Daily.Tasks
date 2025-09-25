@@ -28,6 +28,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Admin\AdminProductCategoryController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Middleware\AdminMiddleware;
 
 require __DIR__.'/auth.php';
@@ -95,6 +96,9 @@ Route::post('/checkout/create-payment-intent', [CheckoutController::class, 'crea
     ->name('checkout.createPaymentIntent');
 
 Route::post('/checkout/store-payment', [CheckoutController::class, 'storePayment'])->name('checkout.storePayment');
+
+Route::post('/checkout/apply-coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.applyCoupon');
+
 
 });
 
@@ -197,6 +201,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     ->name('orders.updateStatus');
     Route::patch('/orders/{order}/return', [App\Http\Controllers\Admin\OrderController::class, 'updateReturn'])
     ->name('orders.updateReturn');
+
+    Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 
 
     //Admin Settings 

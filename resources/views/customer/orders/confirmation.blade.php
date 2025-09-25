@@ -14,8 +14,12 @@
             <h4 class="card-title">Order Details</h4>
             <p><strong>Order ID:</strong> #{{ $order->id }}</p>
             <p><strong>Order Date:</strong> {{ $order->created_at->format('d M, Y h:i A') }}</p>
-            <p><strong>Total:</strong> ₹{{ number_format($order->total, 2) }}</p>
-            <p><strong>Status:</strong> 
+            <p><strong>Subtotal:</strong> ₹{{ number_format($order->subtotal, 2) }}</p>
+            @if($order->discount > 0)
+                <p><strong>Discount:</strong> ₹{{ number_format($order->discount, 2) }}</p>
+            @endif
+            <p><strong>Final Total:</strong> ₹{{ number_format($order->final_total, 2) }}</p>
+                        <p><strong>Status:</strong> 
                 <span class="badge bg-success text-uppercase">{{ $order->status }}</span>
             </p>
             

@@ -10,7 +10,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'name', 'email', 'phone', 'address', 'subtotal', 'total', 'status','delivery_status', 'payment_method', 'payment_id','payment_details','is_reordered','return_status',
+        'user_id', 'name', 'email', 'phone', 'address', 'subtotal', 'total','discount', 'final_total',
+    'coupon_code', 'status','delivery_status', 'payment_method', 'payment_id','payment_details','is_reordered','return_status',
     ];
 
     const STATUS_PENDING   = 'Pending';
@@ -40,5 +41,12 @@ public function payment()
 {
     return $this->hasOne(Payment::class);
 }
+protected $casts = [
+    'subtotal' => 'decimal:2',
+    'total' => 'decimal:2',
+    'discount' => 'decimal:2',
+    'final_total' => 'decimal:2',
+];
+
 
 }

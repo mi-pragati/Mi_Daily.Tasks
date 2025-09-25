@@ -69,7 +69,7 @@ use App\Models\Order;
                                     {{-- Order Date --}}
                                     <td>{{ $order->created_at->format('d-m-Y h:i A') }}</td>
                                     {{-- Total --}}
-                                    <td>₹{{ number_format($order->total, 2) }}</td>
+                                    <td>₹{{ number_format($order->final_total, 2) }}</td>
 
                                     {{-- Status --}}
                                   <td>

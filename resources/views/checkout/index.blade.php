@@ -7,9 +7,12 @@
     <h3 class="mb-4 text-decoration-underline">Checkout Page</h3>
 
     {{-- Cart Summary --}}
-    @if (!empty($items) && count($items) > 0)
+<div class="d-flex flex-wrap">
+    {{-- Left Side: Order Summary Table --}}
+    <div class="flex-grow-1 me-4" style="min-width: 60%;">
+        @if (!empty($items) && count($items) > 0)
         <h4>Order Summary</h4>
-        <div class="table-responsive mb-4" style="max-width: 70%;">
+        <div class="table-responsive mb-4">
             <table class="table align-left">
                 <thead>
                     <tr>
@@ -37,17 +40,60 @@
                     </tr>
                     @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="4" class="text-end">Total</th>
-                        <th>₹{{ number_format($totals['total'], 2) }}</th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
-    @else
+        @else
         <div class="alert alert-info mb-4">Your cart is empty.</div>
-    @endif
+        @endif
+    </div>
+
+    {{-- Right Side: Total Summary Box --}}
+    <div style="min-width: 250px;">
+        <div class="card p-3 shadow-sm">
+            <h5 class="mb-3">Total Summary</h5>
+
+            <div class="d-flex justify-content-between">
+                <span>Subtotal:</span>
+                <span>₹<span id="subtotal">{{ number_format($totals['total'], 2) }}</span></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <span>GST (18%):</span>
+                @php
+                    $gst = $totals['total'] * 0.18;
+                @endphp
+                <span>₹<span id="gst">{{ number_format($gst, 2) }}</span></span>
+            </div>
+
+            <div class="d-flex justify-content-between" id="discount-row" style="display:none; color: green;">
+                <span>Discount:</span>
+                <span>- ₹<span id="discountAmount">0.00</span></span>
+            </div>
+
+               {{-- Optional Shipping Row --}}
+        <div class="d-flex justify-content-between" id="shipping-row">
+            <span>Shipping:</span>
+            <span>₹<span id="shippingAmount">0.00</span></span>
+        </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between fw-bold">
+                <span>Final Total:</span>
+                <span>₹<span id="finalTotal">{{ number_format($totals['total'] + $gst, 2) }}</span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3" style="max-width: 350px;">
+    <label for="coupon_code" class="form-label">Apply Coupon</label>
+    <div class="input-group">
+        <input type="text" id="coupon_code" name="coupon_code" class="form-control" placeholder="Enter coupon code">
+        <button type="button" id="apply-coupon" class="btn btn-primary">Apply</button>
+    </div>
+    <div id="coupon-message" class="mt-2"></div>
+</div>
 
     {{-- Checkout Form --}}
     <h4>Checkout Form</h4>
@@ -112,7 +158,7 @@
     <label for="street" class="form-label">Street Address</label>
     <input type="text" id="street" name="street" class="form-control" placeholder="Flat / House No, Road, Area" required>
 </div>
-
+</div>
 
         {{-- Payment Method --}}
         <h4>Payment Method</h4>
@@ -121,7 +167,7 @@
             <label><input type="radio" name="payment_method" id="stripe" value="stripe"> Pay Online (Card)</label>
         </div>
 
-        {{-- Stripe/Card Form --}}
+{{-- Stripe/Card Form --}}
         <div id="stripe-form" style="display:none; margin-top:15px; max-width:400px;">
             <input type="hidden" name="stripe_method" value="card">
             <div id="card-element" style="border:1px solid #ddd; padding:10px; border-radius:6px;"></div>
@@ -211,53 +257,66 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-   // 4. On City Change → Load Pincodes from public API
-citySelect.addEventListener("change", function () {
-    pincodeSelect.innerHTML = '<option value="">Select Pincode</option>';
-    pincodeSelect.disabled = true;
+    // 4. On City Change → Load Pincodes from public API
+    citySelect.addEventListener("change", function () {
+        pincodeSelect.innerHTML = '<option value="">Select Pincode</option>';
+        pincodeSelect.disabled = true;
 
-    const city = this.value;
-    const state = stateSelect.value;
+        const city = this.value;
+        const state = stateSelect.value;
 
-    if (city && state) {
-        fetch(`https://api.postalpincode.in/postoffice/${city}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data[0].Status === "Success") {
-                    data[0].PostOffice.forEach(p => {
-                        if (p.State.toLowerCase() === state.toLowerCase()) { // optional filter by state
-                            const opt = document.createElement("option");
-                            opt.value = p.Pincode;
-                            opt.textContent = p.Pincode;
-                            pincodeSelect.appendChild(opt);
-                        }
-                    });
-                    pincodeSelect.disabled = false;
-                } else {
-                    console.warn("No pincodes found for this city.");
-                }
-            })
-            .catch(err => console.error("Error fetching pincodes:", err));
-    }
-});
-
+        if (city && state) {
+            fetch(`https://api.postalpincode.in/postoffice/${city}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data[0].Status === "Success") {
+                        data[0].PostOffice.forEach(p => {
+                            if (p.State.toLowerCase() === state.toLowerCase()) {
+                                const opt = document.createElement("option");
+                                opt.value = p.Pincode;
+                                opt.textContent = p.Pincode;
+                                pincodeSelect.appendChild(opt);
+                            }
+                        });
+                        pincodeSelect.disabled = false;
+                    } else {
+                        console.warn("No pincodes found for this city.");
+                    }
+                })
+                .catch(err => console.error("Error fetching pincodes:", err));
+        }
+    });
 });
 </script>
 
 <script src="https://js.stripe.com/v3/"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const stripe = Stripe("{{ config('services.stripe.key') }}");
-    const elements = stripe.elements();
-    const cardElement = elements.create("card");
-    cardElement.mount("#card-element");
-
     const codRadio = document.querySelector('input[value="cod"]');
     const stripeRadio = document.querySelector('input[value="stripe"]');
     const codSubmit = document.getElementById("cod-submit");
     const payNow = document.getElementById("pay-now");
     const stripeForm = document.getElementById("stripe-form");
 
+    const subtotalElem = document.getElementById('subtotal');
+    const gstElem = document.getElementById('gst');
+    const shippingElem = document.getElementById('shippingAmount');
+    const discountRow = document.getElementById('discount-row');
+    const discountAmountElem = document.getElementById('discountAmount');
+    const finalTotalElem = document.getElementById('finalTotal');
+    const couponInput = document.getElementById('coupon_code');
+    const couponMessage = document.getElementById('coupon-message');
+
+    let isProcessing = false;
+
+    // ---------------------- STRIPE INIT ----------------------
+    const stripe = Stripe("{{ config('services.stripe.key') }}");
+    const elements = stripe.elements();
+    const cardElement = elements.create("card");
+    cardElement.mount("#card-element");
+
+    // ---------------------- PAYMENT TOGGLE ----------------------
     function togglePaymentMethod() {
         if (codRadio.checked) {
             codSubmit.style.display = "inline-block";
@@ -269,104 +328,153 @@ document.addEventListener("DOMContentLoaded", function () {
             stripeForm.style.display = "block";
         }
     }
-
     codRadio.addEventListener("change", togglePaymentMethod);
     stripeRadio.addEventListener("change", togglePaymentMethod);
     togglePaymentMethod();
 
-    let isProcessing = false;
+    // ---------------------- HELPER: CALCULATE TOTAL ----------------------
+    function parseNumber(str){
+    return parseFloat(str.replace(/,/g, '')) || 0;
+}
 
-    // COD submit
-    codSubmit.addEventListener("click", async () => {
-        if (isProcessing) return;
-        isProcessing = true;
-        codSubmit.disabled = true;
+function updateSummary(discount = 0){
+    const subtotal = parseNumber(subtotalElem.innerText);
+    const gst = subtotal * 0.18;
+    const shipping = parseNumber(shippingElem.innerText);
 
-        const data = {
-            _token: "{{ csrf_token() }}",
-            payment_method: "cod",
-            name: document.querySelector('input[name="name"]').value,
-            email: document.querySelector('input[name="email"]').value,
-            phone: document.querySelector('input[name="phone"]').value,
-            country: document.querySelector('select[name="country"]').value,
-            state: document.querySelector('select[name="state"]').value,
-            city: document.querySelector('select[name="city"]').value,
-            pincode: document.querySelector('select[name="pincode"]').value,
-            street: document.querySelector('input[name="street"]').value,
-        };
+    gstElem.innerText = gst.toFixed(2);
 
-        const res = await fetch("{{ route('checkout.placeOrder') }}", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        if (result.success) window.location.href = result.redirect;
-        else alert(result.error || "Error processing order");
+    if(discount > 0){
+        discountRow.style.display = 'flex';
+        discountAmountElem.innerText = discount.toFixed(2);
+    } else {
+        discountRow.style.display = 'none';
+    }
 
-        isProcessing = false;
-        codSubmit.disabled = false;
-    });
+    let finalTotal = subtotal + gst + shipping - discount;
+    if(finalTotal < 0) finalTotal = 0;
 
-    // Stripe submit
-    payNow.addEventListener("click", async () => {
-        if (isProcessing) return;
-        isProcessing = true;
-        payNow.disabled = true;
+    finalTotalElem.innerText = finalTotal.toFixed(2);
+}
 
-        const data = {
-            _token: "{{ csrf_token() }}",
-            payment_method: "stripe",
-            stripe_method: "card",
-            name: document.querySelector('input[name="name"]').value,
-            email: document.querySelector('input[name="email"]').value,
-            phone: document.querySelector('input[name="phone"]').value,
-            country: document.querySelector('select[name="country"]').value,
-            state: document.querySelector('select[name="state"]').value,
-            city: document.querySelector('select[name="city"]').value,
-            pincode: document.querySelector('select[name="pincode"]').value,
-            street: document.querySelector('input[name="street"]').value,
-        };
+
+    // Initial calculation
+    updateSummary(0);
+
+    // ---------------------- APPLY COUPON ----------------------
+    document.getElementById('apply-coupon')?.addEventListener('click', async () => {
+        const code = couponInput.value.trim();
+        if(!code){
+            couponMessage.innerHTML = '<span class="text-danger">⚠ Please enter a coupon code.</span>';
+            return;
+        }
 
         try {
-            const response = await fetch("{{ route('checkout.placeOrder') }}", {
+            const res = await fetch("{{ route('checkout.applyCoupon') }}", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                body: JSON.stringify(data)
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ coupon_code: code })
             });
-            const result = await response.json();
 
-            if (result.clientSecret && result.orderId) {
-                const paymentResult = await stripe.confirmCardPayment(result.clientSecret, {
-                    payment_method: { card: cardElement, billing_details: { name: data.name, email: data.email } }
-                });
+            const data = await res.json();
 
-                if (paymentResult.error) alert(paymentResult.error.message);
-                else if (paymentResult.paymentIntent.status === "succeeded") {
-                    await fetch("{{ route('checkout.storePayment') }}", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
-                        body: JSON.stringify({
-                            order_id: result.orderId,
-                            payment_id: paymentResult.paymentIntent.id,
-                            amount: paymentResult.paymentIntent.amount / 100,
-                            currency: paymentResult.paymentIntent.currency,
-                            status: paymentResult.paymentIntent.status,
-                            payment_method: "card"
-                        })
-                    });
-
-                    window.location.href = "{{ route('customer.orders.confirmation', ':id') }}".replace(':id', result.orderId);
-                }
-            } else alert(result.error || "Unknown error");
-        } catch (err) {
-            console.error(err);
-            alert("Payment request failed: " + err.message);
-        } finally {
-            isProcessing = false;
-            payNow.disabled = false;
+            if(data.success){
+                updateSummary(data.discount);
+                couponMessage.innerHTML = '<span class="text-success">✅ Coupon ' + data.coupon + ' applied. Discount: ₹' + data.discount.toFixed(2) + '</span>';
+            } else {
+                updateSummary(0);
+                couponMessage.innerHTML = '<span class="text-danger">' + data.message + '</span>';
+            }
+        } catch(err){
+            console.error("Coupon Error:", err);
+            couponMessage.innerHTML = '<span class="text-danger">⚠ Error applying coupon.</span>';
         }
     });
+
+    // ---------------------- PLACE ORDER FUNCTION ----------------------
+    async function getFormData(paymentMethod = "cod"){
+        return {
+            _token: "{{ csrf_token() }}",
+            payment_method: paymentMethod,
+            stripe_method: paymentMethod === "stripe" ? "card" : null,
+            coupon_code: couponInput.value,
+            name: document.querySelector('input[name="name"]').value || '',
+            email: document.querySelector('input[name="email"]').value || '',
+            phone: document.querySelector('input[name="phone"]').value || '',
+            country: document.getElementById("country").value,
+            state: document.getElementById("state").value,
+            city: document.getElementById("city").value,
+            pincode: document.getElementById("pincode").value,
+            street: document.getElementById("street").value
+        };
+    }
+
+    async function placeOrder(paymentMethod){
+        if(isProcessing) return;
+        isProcessing = true;
+
+        const data = await getFormData(paymentMethod);
+
+        try{
+            // COD
+            if(paymentMethod === "cod"){
+                codSubmit.disabled = true;
+                const res = await fetch("{{ route('checkout.placeOrder') }}", {
+                    method:"POST",
+                    headers:{ "Content-Type":"application/json","Accept":"application/json"},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.success && result.orderId) window.location.href = result.redirect;
+                else alert(result.error || "Error processing COD order.");
+                codSubmit.disabled = false;
+            }
+
+            // STRIPE
+            if(paymentMethod === "stripe"){
+                payNow.disabled = true;
+                const res = await fetch("{{ route('checkout.placeOrder') }}", {
+                    method:"POST",
+                    headers:{ "Content-Type":"application/json","Accept":"application/json"},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if(result.clientSecret && result.orderId){
+                    const paymentResult = await stripe.confirmCardPayment(result.clientSecret, {
+                        payment_method: { card: cardElement, billing_details:{ name: data.name, email: data.email } }
+                    });
+
+                    if(paymentResult.error) alert(paymentResult.error.message);
+                    else if(paymentResult.paymentIntent.status === "succeeded"){
+                        await fetch("{{ route('checkout.storePayment') }}", {
+                            method:"POST",
+                            headers:{ "Content-Type":"application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+                            body: JSON.stringify({
+                                order_id: result.orderId,
+                                payment_id: paymentResult.paymentIntent.id,
+                                amount: paymentResult.paymentIntent.amount / 100,
+                                currency: paymentResult.paymentIntent.currency,
+                                status: paymentResult.paymentIntent.status,
+                                payment_method: "card"
+                            })
+                        });
+                        const confirmationRoute = "{{ route('customer.orders.confirmation', ':id') }}";
+                        window.location.href = confirmationRoute.replace(':id', result.orderId);
+                    }
+                } else alert(result.error || "Stripe payment failed.");
+                payNow.disabled = false;
+            }
+        }catch(err){ console.error(err); alert("An error occurred: "+err.message); }
+        finally{ isProcessing = false; }
+    }
+
+    codSubmit.addEventListener("click", e=>{ e.preventDefault(); placeOrder("cod"); });
+    payNow.addEventListener("click", e=>{ e.preventDefault(); placeOrder("stripe"); });
 });
 </script>
+
 @endpush

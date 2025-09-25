@@ -29,4 +29,18 @@ class AdminController extends Controller
         $categories = Category::withCount('posts')->get();
         return view('admin.index', compact('categories'));
     }
+    public function store(Request $request)
+{
+    $request->validate([
+        'code' => 'required|unique:coupons,code',
+        'type' => 'required|in:fixed,percent',
+        'value' => 'required|numeric|min:1',
+        'expiry_date' => 'nullable|date|after:today',
+    ]);
+
+    Coupon::create($request->all());
+
+    return redirect()->back()->with('success', 'Coupon created successfully!');
+}
+
 }

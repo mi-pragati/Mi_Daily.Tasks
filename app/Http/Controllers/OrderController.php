@@ -75,28 +75,42 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'total'   => $request->total,
-            'status'  => Order::STATUS_PENDING,
-            'payment_method' => 'N/A', // hide payment method
-        ]);
+{
+    $subtotal = 0;
 
-        foreach ($request->items as $item) {
-            $product = Product::find($item['product_id']);
-            $order->orderItems()->create([
-                'product_id' => $product->id,
-                'qty'        => $item['qty'],
-                'price'      => $product->price,
-                'title'      => $product->title,
-                'subtotal'   => $product->price * $item['qty'],
-                'image'      => $product->image,
-            ]);
-        }
-
-        return redirect()->route('customer.orders.confirmation', $order->id);
+    foreach ($request->items as $item) {
+        $product = Product::find($item['product_id']);
+        $subtotal += $product->price * $item['qty'];
     }
+
+    $discount = $request->discount ?? 0; // coupon discount
+    $total = $subtotal - $discount;
+
+    $order = Order::create([
+        'user_id' => Auth::id(),
+        'subtotal' => $subtotal,
+        'discount' => $discount,
+        'total' => $total,
+        'coupon_code' => $request->coupon_code ?? null,
+        'status' => Order::STATUS_PENDING,
+        'payment_method' => 'N/A',
+    ]);
+
+    foreach ($request->items as $item) {
+        $product = Product::find($item['product_id']);
+        $order->orderItems()->create([
+            'product_id' => $product->id,
+            'qty' => $item['qty'],
+            'price' => $product->price,
+            'title' => $product->title,
+            'subtotal' => $product->price * $item['qty'],
+            'image' => $product->image,
+        ]);
+    }
+
+    return redirect()->route('customer.orders.confirmation', $order->id);
+}
+
 
    public function reorder(Request $request, $orderId)
 {

@@ -70,7 +70,9 @@
               <li><a class="dropdown-item" href="{{ route('admin.posts.index') }}">Posts</a></li>
               <li><a class="dropdown-item" href="{{ route('admin.product-categories.index') }}">Product_Categories</a></li>
               <li><a class="dropdown-item" href="{{ route('admin.products.index') }}">Products</a></li>
-                <li><a class="dropdown-item" href="{{ route('admin.orders.index') }}">Orders</a></li>
+              <li><a class="dropdown-item" href="{{ route('admin.orders.index') }}">Orders</a></li>
+              <li><a class="dropdown-item" href="{{ route('admin.coupons.index') }}">Coupons</a></li>
+
 
               <li><hr class="dropdown-divider"></li>
               <li class="dropdown-header">Quick actions</li>

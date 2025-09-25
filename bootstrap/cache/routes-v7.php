@@ -33,7 +33,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::U9KIaa5UsJDnJR6J',
+            '_route' => 'generated::dVO0RdPww1s6xjc6',
           ),
           1 => NULL,
           2 => 
@@ -70,7 +70,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::CU9b4X3a0SpomwJl',
+            '_route' => 'generated::BtUZQNay9g9kNpBT',
           ),
           1 => NULL,
           2 => 
@@ -106,7 +106,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::kz06JNryIgIlgR0g',
+            '_route' => 'generated::BWrns5ojkOQqb540',
           ),
           1 => NULL,
           2 => 
@@ -236,7 +236,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::kIXMB1ctovNAw0Mt',
+            '_route' => 'generated::MdeifWA90s7VMve2',
           ),
           1 => NULL,
           2 => 
@@ -564,6 +564,25 @@ app('router')->setCompiledRoutes(
           0 => 
           array (
             '_route' => 'checkout.storePayment',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/checkout/apply-coupon' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'checkout.applyCoupon',
           ),
           1 => NULL,
           2 => 
@@ -1164,6 +1183,62 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
+      '/admin/coupons' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.index',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.store',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/admin/coupons/create' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.create',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
       '/admin/settings' => 
       array (
         0 => 
@@ -1540,7 +1615,7 @@ app('router')->setCompiledRoutes(
     ),
     2 => 
     array (
-      0 => '{^(?|/reset\\-password/([^/]++)(*:32)|/verify\\-email/([^/]++)/([^/]++)(*:71)|/c(?|a(?|tegories/([^/]++)(*:104)|rt/(?|([^/]++)(?|(*:129))|count(*:143)))|omments/([^/]++)(?|/edit(*:177)|(*:185)))|/p(?|osts/([^/]++)(?|(*:216)|/comments(*:233))|roducts/(?|category/([^/]++)(*:270)|([^/]++)(*:286)))|/order(?|s/([^/]++)(?|(*:318)|/re(?|order(*:337)|turn(?|(*:352))))|/confirmation/([^/]++)(*:385))|/wishlist/([^/]++)(*:412)|/editor/(?|categories/([^/]++)(*:450)|posts/([^/]++)(?|/edit(*:480)|(*:488)))|/admin/(?|orders/([^/]++)(?|(*:526)|/(?|status(*:544)|return(*:558)))|categories/([^/]++)(*:587)|p(?|osts/([^/]++)(?|/edit(*:620)|(*:628))|roduct(?|s/(?|([^/]++)(?|(*:662)|/edit(*:675)|(*:683))|category/([^/]++)(*:709))|\\-categories/([^/]++)(?|(*:742)|/edit(*:755)|(*:763)))))|/storage/(.*)(*:788))/?$}sDu',
+      0 => '{^(?|/reset\\-password/([^/]++)(*:32)|/verify\\-email/([^/]++)/([^/]++)(*:71)|/c(?|a(?|tegories/([^/]++)(*:104)|rt/(?|([^/]++)(?|(*:129))|count(*:143)))|omments/([^/]++)(?|/edit(*:177)|(*:185)))|/p(?|osts/([^/]++)(?|(*:216)|/comments(*:233))|roducts/(?|category/([^/]++)(*:270)|([^/]++)(*:286)))|/order(?|s/([^/]++)(?|(*:318)|/re(?|order(*:337)|turn(?|(*:352))))|/confirmation/([^/]++)(*:385))|/wishlist/([^/]++)(*:412)|/editor/(?|categories/([^/]++)(*:450)|posts/([^/]++)(?|/edit(*:480)|(*:488)))|/admin/(?|orders/([^/]++)(?|(*:526)|/(?|status(*:544)|return(*:558)))|c(?|oupons/([^/]++)(?|(*:590)|/edit(*:603)|(*:611))|ategories/([^/]++)(*:638))|p(?|osts/([^/]++)(?|/edit(*:672)|(*:680))|roduct(?|s/(?|([^/]++)(?|(*:714)|/edit(*:727)|(*:735))|category/([^/]++)(*:761))|\\-categories/([^/]++)(?|(*:794)|/edit(*:807)|(*:815)))))|/storage/(.*)(*:840))/?$}sDu',
     ),
     3 => 
     array (
@@ -2100,7 +2175,95 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      587 => 
+      590 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.show',
+          ),
+          1 => 
+          array (
+            0 => 'coupon',
+          ),
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+      ),
+      603 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.edit',
+          ),
+          1 => 
+          array (
+            0 => 'coupon',
+          ),
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      611 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.update',
+          ),
+          1 => 
+          array (
+            0 => 'coupon',
+          ),
+          2 => 
+          array (
+            'PUT' => 0,
+            'PATCH' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.coupons.destroy',
+          ),
+          1 => 
+          array (
+            0 => 'coupon',
+          ),
+          2 => 
+          array (
+            'DELETE' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+      ),
+      638 => 
       array (
         0 => 
         array (
@@ -2123,7 +2286,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      620 => 
+      672 => 
       array (
         0 => 
         array (
@@ -2146,7 +2309,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      628 => 
+      680 => 
       array (
         0 => 
         array (
@@ -2188,7 +2351,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      662 => 
+      714 => 
       array (
         0 => 
         array (
@@ -2211,7 +2374,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      675 => 
+      727 => 
       array (
         0 => 
         array (
@@ -2234,7 +2397,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      683 => 
+      735 => 
       array (
         0 => 
         array (
@@ -2276,7 +2439,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      709 => 
+      761 => 
       array (
         0 => 
         array (
@@ -2299,7 +2462,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      742 => 
+      794 => 
       array (
         0 => 
         array (
@@ -2322,7 +2485,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      755 => 
+      807 => 
       array (
         0 => 
         array (
@@ -2345,7 +2508,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      763 => 
+      815 => 
       array (
         0 => 
         array (
@@ -2387,7 +2550,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      788 => 
+      840 => 
       array (
         0 => 
         array (
@@ -2462,7 +2625,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::U9KIaa5UsJDnJR6J' => 
+    'generated::dVO0RdPww1s6xjc6' => 
     array (
       'methods' => 
       array (
@@ -2490,8 +2653,8 @@ app('router')->setCompiledRoutes(
                     return response(\\Illuminate\\Support\\Facades\\View::file(\'D:\\\\Mi.tasks\\\\Laravel_Blog_E-Com\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Configuration\'.\'/../resources/health-up.blade.php\', [
                         \'exception\' => $exception,
                     ]), status: $exception ? 500 : 200);
-                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"000000000000056a0000000000000000";}}',
-        'as' => 'generated::U9KIaa5UsJDnJR6J',
+                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"00000000000009210000000000000000";}}',
+        'as' => 'generated::dVO0RdPww1s6xjc6',
       ),
       'fallback' => false,
       'defaults' => 
@@ -2545,7 +2708,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::CU9b4X3a0SpomwJl' => 
+    'generated::BtUZQNay9g9kNpBT' => 
     array (
       'methods' => 
       array (
@@ -2566,7 +2729,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::CU9b4X3a0SpomwJl',
+        'as' => 'generated::BtUZQNay9g9kNpBT',
       ),
       'fallback' => false,
       'defaults' => 
@@ -2620,7 +2783,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::kz06JNryIgIlgR0g' => 
+    'generated::BWrns5ojkOQqb540' => 
     array (
       'methods' => 
       array (
@@ -2641,7 +2804,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::kz06JNryIgIlgR0g',
+        'as' => 'generated::BWrns5ojkOQqb540',
       ),
       'fallback' => false,
       'defaults' => 
@@ -2961,7 +3124,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::kIXMB1ctovNAw0Mt' => 
+    'generated::MdeifWA90s7VMve2' => 
     array (
       'methods' => 
       array (
@@ -2982,7 +3145,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::kIXMB1ctovNAw0Mt',
+        'as' => 'generated::MdeifWA90s7VMve2',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3051,7 +3214,7 @@ app('router')->setCompiledRoutes(
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:75:"function () {
     \\Auth::logout();
     return \\redirect()->route(\'home\');
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005830000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000009410000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
@@ -3499,7 +3662,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 'web',
         ),
-        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:35:"fn () => \\redirect()->route(\'homi\')";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005290000000000000000";}}',
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:35:"fn () => \\redirect()->route(\'homi\')";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000008df0000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
@@ -3835,7 +3998,7 @@ app('router')->setCompiledRoutes(
         \'ok\' => true,
         \'count\' => \\count($cart)
     ]);
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000000000053a0000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000008f00000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
@@ -4029,6 +4192,43 @@ app('router')->setCompiledRoutes(
         array (
         ),
         'as' => 'checkout.storePayment',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'checkout.applyCoupon' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'POST',
+      ),
+      'uri' => 'checkout/apply-coupon',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+        ),
+        'uses' => 'App\\Http\\Controllers\\CheckoutController@applyCoupon',
+        'controller' => 'App\\Http\\Controllers\\CheckoutController@applyCoupon',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'checkout.applyCoupon',
       ),
       'fallback' => false,
       'defaults' => 
@@ -5665,6 +5865,277 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
+    'admin.coupons.index' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/coupons',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.index',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@index',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@index',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.coupons.create' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/coupons/create',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.create',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@create',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@create',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.coupons.store' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'POST',
+      ),
+      'uri' => 'admin/coupons',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.store',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@store',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@store',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.coupons.show' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/coupons/{coupon}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.show',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@show',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@show',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.coupons.edit' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/coupons/{coupon}/edit',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.edit',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@edit',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@edit',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.coupons.update' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'PUT',
+        1 => 'PATCH',
+      ),
+      'uri' => 'admin/coupons/{coupon}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.update',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@update',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@update',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.coupons.destroy' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'DELETE',
+      ),
+      'uri' => 'admin/coupons/{coupon}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+          2 => 'admin',
+        ),
+        'as' => 'admin.coupons.destroy',
+        'uses' => 'App\\Http\\Controllers\\Admin\\CouponController@destroy',
+        'controller' => 'App\\Http\\Controllers\\Admin\\CouponController@destroy',
+        'namespace' => NULL,
+        'prefix' => '/admin',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
     'admin.settings.index' => 
     array (
       'methods' => 
@@ -6929,7 +7400,7 @@ app('router')->setCompiledRoutes(
         \'editor\' => \\redirect()->route(\'editor.home\'),
         default  => \\redirect()->route(\'homi\'),
     };
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000000000053e0000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000008f40000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
@@ -6967,7 +7438,7 @@ app('router')->setCompiledRoutes(
                         $config,
                         $isProduction
                     ))($request, $path);
-                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"000000000000053c0000000000000000";}}',
+                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"00000000000008f20000000000000000";}}',
         'as' => 'storage.local',
       ),
       'fallback' => false,

@@ -15,6 +15,8 @@
     <p><strong>Date:</strong> {{ $order->created_at->format('d-m-Y h:i A') }}</p>
     <p><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
     <p><strong>Total Amount:</strong> ₹{{ number_format($order->total, 2) }}</p>
+    <p><strong>Payment Method:</strong> {{ strtoupper($order->payment_method) }}</p>
+
 
     <h3>Items Ordered:</h3>
     <ul>

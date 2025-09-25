@@ -16,6 +16,9 @@ return new class extends Migration {
             $table->json('items')->nullable(); 
             $table->decimal('subtotal', 10, 2);
             $table->decimal('total', 10, 2);
+            $table->decimal('discount', 10, 2)->default(0);
+            $table->decimal('final_total', 10, 2)->default(0);
+            $table->string('coupon_code')->nullable();
             $table->string('status')->default('Pending');
             $table->enum('delivery_status', ['Pending', 'Re-Ordered', 'Returned'])->default('Pending'); // Customer control
             $table->timestamps();
