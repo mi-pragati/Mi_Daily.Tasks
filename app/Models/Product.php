@@ -95,4 +95,16 @@ public function getRouteKeyName()
     return 'slug';
 }
 
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
+
+public function averageRating()
+{
+    return round($this->reviews()->avg('rating') ?? 0, 1);
+}
+
+
+
 }

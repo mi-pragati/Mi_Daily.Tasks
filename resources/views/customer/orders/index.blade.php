@@ -56,6 +56,7 @@ use App\Models\Order;
                                 <th>Total</th>
                                 <th>Status</th>
                                 <th>Action</th>
+                                 <th>Reviews / Ratings</th>
                                 <th>Re-Order</th>
                                 <th>Return</th>
                             </tr>
@@ -88,6 +89,44 @@ use App\Models\Order;
                                             View
                                         </a>
                                     </td>
+
+                                     {{-- Reviews / Ratings --}}
+            <td>
+                @php
+                    $orderItems = $order->orderItems;
+                    $totalRating = 0;
+                    $reviewCount = 0;
+                @endphp
+
+                @foreach($orderItems as $item)
+                    @php
+                        $review = $item->product->reviews()->where('user_id', auth()->id())->first();
+                        if($review) {
+                            $totalRating += $review->rating;
+                            $reviewCount++;
+                        }
+                    @endphp
+
+                    <a href="{{ route('products.show', $item->product->slug) }}" class="text-decoration-none d-inline-block me-1 mb-1">
+                        @for($i = 1; $i <= 5; $i++)
+                            <span class="text-warning">
+                                {!! $review && $i <= $review->rating ? '&#9733;' : '&#9734;' !!}
+                            </span>
+                        @endfor
+                    </a>
+                @endforeach
+
+                {{-- Aggregate if multiple products --}}
+                @if($orderItems->count() > 1)
+                    <div class="mt-1 small text-muted">
+                        Avg: 
+                        @php
+                            $avg = $reviewCount > 0 ? round($totalRating / $reviewCount, 1) : 0;
+                        @endphp
+                        {{ $avg }}/5
+                    </div>
+                @endif
+            </td>
 
                                      {{-- Reorder --}}
             <td>

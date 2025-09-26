@@ -88,5 +88,19 @@ public function updateReturn(Request $request, Order $order)
     return redirect()->back()->with('error', 'No return found for this order.');
 }
 
+public function recentOrders(Request $request)
+{
+    $query = Order::with('user')->latest();
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $orders = $query->take(10)->get();
+
+    return response()->json($orders);
+}
+
+
 
 }

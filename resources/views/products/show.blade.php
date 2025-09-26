@@ -87,8 +87,55 @@
         <h5>Description</h5>
         <p class="mb-0">{{ $product->description }}</p>
       @endif
+
+      <hr class="my-4">
+
+<h4>Reviews</h4>
+
+{{-- Show average rating --}}
+<p>Average Rating: {{ number_format($product->averageRating(), 1) }}/5</p>
+
+{{-- Review Form --}}
+@auth
+<form id="review-form" action="{{ route('reviews.store', $product) }}" method="POST" class="mb-3">
+    @csrf
+    <div class="mb-2">
+        <label for="rating" class="d-block">Your Rating</label>
+        <div id="star-rating" class="d-flex gap-1" style="font-size: 1.5rem; cursor: pointer;">
+            @for ($i = 1; $i <= 5; $i++)
+                <span class="star" data-value="{{ $i }}">&#9733;</span>
+            @endfor
+        </div>
+        <input type="hidden" name="rating" id="rating" required>
     </div>
-  </div>
+
+    <div class="mb-2">
+        <textarea name="comment" class="form-control" placeholder="Write your review..." rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+</form>
+@endauth
+
+{{-- Reviews List --}}
+<div id="reviews-list">
+    @foreach ($product->reviews()->latest()->get() as $review)
+        <div class="mb-3 border-bottom pb-2 review" id="review-{{ $review->id }}">
+            <strong>{{ $review->user->name }}</strong>
+            <span class="text-warning ms-2">Rating: {{ $review->rating }}/5</span>
+            <p>{{ $review->comment }}</p>
+
+            @if (Auth::check() && $review->user_id === auth()->id())
+                <form action="{{ route('reviews.destroy', [$review->product, $review]) }}" method="POST" class="d-inline">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+
+            @endif
+        </div>
+    @endforeach
+</div>
 
   {{-- Related products --}}
   @if(isset($related) && $related->count())
@@ -190,4 +237,76 @@
     }
   });
 </script>
+
+<script>
+document.getElementById('review-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': formData.get('_token'),
+                'Accept': 'application/json',
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+            const reviewsList = document.getElementById('reviews-list');
+            const existingReview = document.getElementById('review-' + data.review.id);
+
+            const html = `
+                <div class="mb-3 border-bottom pb-2 review" id="review-${data.review.id}">
+                    <strong>${data.review.user_name}</strong>
+                    <span class="text-warning ms-2">Rating: ${data.review.rating}/5</span>
+                    <p>${data.review.comment ?? ''}</p>
+                </div>
+            `;
+
+            if (existingReview) {
+                existingReview.outerHTML = html; // update existing
+            } else {
+                reviewsList.insertAdjacentHTML('afterbegin', html); // add new
+            }
+
+            form.reset(); // reset form
+        } else {
+            alert(data.message || 'Error submitting review');
+        }
+    } catch(err) {
+        console.error(err);
+        alert('Error submitting review');
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const stars = document.querySelectorAll('#star-rating .star');
+    const ratingInput = document.getElementById('rating');
+
+    stars.forEach(star => {
+        star.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            ratingInput.value = value;
+
+            // reset colors
+            stars.forEach(s => s.style.color = '#ccc');
+
+            // highlight selected stars
+            for (let i = 0; i < value; i++) {
+                stars[i].style.color = '#ffc107'; // Bootstrap warning color (gold)
+            }
+        });
+    });
+});
+</script>
+
+
 @endpush

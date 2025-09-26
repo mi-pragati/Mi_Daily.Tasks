@@ -67,6 +67,8 @@
                 <th>Qty</th>
                 <th>Price</th>
                 <th>Subtotal</th>
+                <th>Review / Rating</th> <!-- New column -->
+
             </tr>
         </thead>
         <tbody>
@@ -90,7 +92,19 @@
                     <td>{{ $title }}</td>
                     <td>{{ $item->qty }}</td>
                     <td>₹{{ number_format($price, 2) }}</td>
-                    <td>₹{{ number_format($subtotal, 2) }}</td>
+                    <td>₹{{ number_format($order->final_total, 2) }}</td>
+                    @php
+    $review = $item->product->reviews()->where('user_id', auth()->id())->first();
+@endphp
+
+<td>
+    <a href="{{ route('products.show', $item->product->slug) }}" class="text-decoration-none review-stars">
+        @for($i = 1; $i <= 5; $i++)
+            <span class="text-warning">{!! $review && $i <= $review->rating ? '&#9733;' : '&#9734;' !!}</span>
+        @endfor
+    </a>
+</td>
+
                 </tr>
             @endforeach
         </tbody>

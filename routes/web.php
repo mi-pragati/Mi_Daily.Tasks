@@ -29,6 +29,7 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Admin\AdminProductCategoryController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Middleware\AdminMiddleware;
 
 require __DIR__.'/auth.php';
@@ -150,6 +151,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/confirm-otp', [ProfileController::class, 'confirmOtp'])->name('profile.confirm-otp');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/products/{product}/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
 // ===========================
@@ -194,6 +197,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Admin Order Route
+     Route::get('orders/recent', [App\Http\Controllers\Admin\OrderController::class, 'recentOrders'])
+    ->name('orders.recentOrders');
 
     Route::get('orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
@@ -201,6 +206,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     ->name('orders.updateStatus');
     Route::patch('/orders/{order}/return', [App\Http\Controllers\Admin\OrderController::class, 'updateReturn'])
     ->name('orders.updateReturn');
+
 
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 
@@ -249,6 +255,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
     ->name('products.byCategory');
 
 });
+
 
 // ============================
 // Logic Routes (Dashboard, etc.)

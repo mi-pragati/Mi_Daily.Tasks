@@ -31,6 +31,7 @@
                 <th>Product</th>
                 <th>Qty</th>
                 <th>Price</th>
+                <th>Discount</th>
                 <th>Subtotal</th>
             </tr>
         </thead>
@@ -51,7 +52,8 @@
                     <td>{{ $item->product->title ?? 'N/A' }}</td>
                     <td>{{ $item->qty }}</td>
                     <td>₹{{ number_format($item->price, 2) }}</td>
-                    <td>₹{{ number_format($item->price * $item->qty, 2) }}</td>
+                    <td>₹{{ number_format($order->discount, 2) }}</td>
+                    <td>₹{{ number_format($order->final_total, 2) }}</td>
                 </tr>
             @endforeach
         </tbody>

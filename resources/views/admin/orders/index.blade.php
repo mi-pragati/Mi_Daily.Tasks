@@ -63,7 +63,7 @@ use App\Models\Order;
                 <td>{{ $order->email }}</td>
                 <td>{{ $order->phone }}</td>
                 <td>{{ $order->address }}</td>
-                <td>₹{{ number_format($order->total, 2) }}</td>
+                <td>₹{{ number_format($order->final_total, 2) }}</td>
 
                 {{-- Editable Order Status --}}
                 <td>

@@ -114,11 +114,16 @@ class OrderController extends Controller
 
    public function reorder(Request $request, $orderId)
 {
+
+        $userId = Auth::id();
+
     $oldOrder = Order::with('orderItems')->findOrFail($orderId);
 
     // ✅ Mark the original order as re-ordered
     $oldOrder->update(['is_reordered' => true]);
 
+    // Clear current cart
+    Cart::where('user_id', $userId)->delete();
     // ✅ Add the items to the current cart
     $cart = Cart::firstOrCreate(['user_id' => auth()->id()]);
 

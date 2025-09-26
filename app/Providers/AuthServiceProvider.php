@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Review;
+use App\Policies\ReviewPolicy;
 use App\Policies\CommentPolicy;
 use App\Policies\PostPolicy;
 use App\Policies\CategoryPolicy;
@@ -25,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
         Comment::class=>CommentPolicy::class,
             \App\Models\Product::class => \App\Policies\ProductPolicy::class,
             \App\Models\Order::class => \App\Policies\OrderPolicy::class,
+    \App\Models\Review::class => \App\Policies\ReviewPolicy::class,
+
 
     ];
 
