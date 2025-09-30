@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
@@ -16,6 +17,7 @@ class AdminDashboardController extends Controller
             'categories' => Category::count(),
             'posts'      => Post::count(),
             'comments'   => Comment::count(),
+            'orders'     => Order::count(),
         ];
 
         // Posts by category (for pie chart)

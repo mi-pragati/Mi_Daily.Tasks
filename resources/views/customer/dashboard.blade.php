@@ -86,4 +86,7 @@
       <img src="{{ asset('images/D-image.jpg') }}" alt="Welcome to your dashboard">
     </div>
   </div>
+
+@include('partials.recently-viewed')
+
 @endsection

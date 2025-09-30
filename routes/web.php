@@ -70,6 +70,8 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 // Logout Route
 Route::post('/logout', function () {
     Auth::logout();
+     // Clear guest recently viewed as well
+    session()->forget('recently_viewed_guest');
     return redirect()->route('home');
 })->name('logout');
 
@@ -183,6 +185,18 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
 });
 
+Route::post('/recently-viewed/clear', function () {
+    if (auth()->check()) {
+        session()->forget('recently_viewed_user_' . auth()->id());
+    }
+    session()->forget('recently_viewed_guest');
+
+    return redirect()->back()->with('success', 'Recently viewed products cleared!');
+})->name('recently-viewed.clear');
+
+
+
+
 // ============================
 // Admin Routes (Restricted Access)
 // ============================
@@ -200,13 +214,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
      Route::get('orders/recent', [App\Http\Controllers\Admin\OrderController::class, 'recentOrders'])
     ->name('orders.recentOrders');
 
+     Route::get('/orders/export', [App\Http\Controllers\Admin\OrderController::class, 'exportCsv'])
+    ->name('orders.export');
     Route::get('orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])
     ->name('orders.updateStatus');
     Route::patch('/orders/{order}/return', [App\Http\Controllers\Admin\OrderController::class, 'updateReturn'])
     ->name('orders.updateReturn');
-
 
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 
@@ -255,6 +270,13 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
     ->name('products.byCategory');
 
 });
+
+Route::post('admin/recently-viewed/clear', function () {
+    $sessionKey = auth()->check() ? 'recently_viewed_user_' . auth()->id() : 'recently_viewed_guest';
+    session()->forget($sessionKey);
+    return redirect()->back()->with('status', 'Recently viewed products cleared.');
+})->name('admin.recently-viewed.clear');
+
 
 
 // ============================

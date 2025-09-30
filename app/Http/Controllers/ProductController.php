@@ -91,6 +91,33 @@ public function show(Product $product)
     // Eager-load category for the view
     $product->load('category');
 
+   // Store recently viewed in session
+    if (auth()->check()) {
+        $sessionKey = 'recently_viewed_user_' . auth()->id();
+    } else {
+        $sessionKey = 'recently_viewed_guest';
+    }
+
+    $recentlyViewed = session($sessionKey, []);
+
+    // Remove duplicates
+    $recentlyViewed = collect($recentlyViewed)
+                        ->reject(fn($p) => $p['id'] === $product->id)
+                        ->take(9)  // max 9 old items
+                        ->toArray();
+
+    array_unshift($recentlyViewed, [
+        'id' => $product->id,
+        'title' => $product->title,
+        'slug' => $product->slug,
+        'price' => $product->price,
+        'image' => $product->image ?? '/default-product.png',
+    ]);
+
+    session([$sessionKey => array_slice($recentlyViewed, 0, 10)]); // keep max 10
+
+
+
     // Try related by same category, exclude current
     $related = Product::with('category')
         ->where('id', '!=', $product->id)

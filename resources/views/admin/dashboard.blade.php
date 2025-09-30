@@ -7,6 +7,43 @@
 
 <div class="container">
 
+{{-- Stats --}}
+ <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="text-muted small mb-1">Categories</div>
+          <div class="h5">{{ $totals['categories'] }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="text-muted small mb-1">Posts</div>
+          <div class="h5">{{ $totals['posts'] }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="text-muted small mb-1">Comments</div>
+          <div class="h5">{{ $totals['comments'] }}</div>
+        </div>
+      </div>
+    </div>
+ <div class="col-md-3">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <div class="text-muted small mb-1">Orders</div>
+      <div class="h5">{{ $totals['orders'] }}</div>
+    </div>
+  </div>
+</div>
+</div>
+
+
  {{-- Recent Orders --}}
 <div class="row mb-4">
   <div class="col-12">
@@ -46,34 +83,6 @@
     </div>
   </div>
 </div>
-
- {{-- Stats --}}
- <div class="row g-3 mb-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
-          <div class="text-muted small mb-1">Categories</div>
-          <div class="h5">{{ $totals['categories'] }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
-          <div class="text-muted small mb-1">Posts</div>
-          <div class="h5">{{ $totals['posts'] }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
-          <div class="text-muted small mb-1">Comments</div>
-          <div class="h5">{{ $totals['comments'] }}</div>
-        </div>
-      </div>
-    </div>
- </div>
 
  {{-- Charts --}}
  <div class="row g-4">

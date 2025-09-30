@@ -31,6 +31,10 @@
           @endforeach
       </div>
 
+      {{-- Recently Viewed --}}
+       @include('partials.recently-viewed')
+
+
       {{-- Categories --}}
       <h3 class="my-4">Shop by Categories</h3>
       <div class="row">

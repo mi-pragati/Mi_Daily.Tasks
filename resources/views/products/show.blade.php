@@ -13,6 +13,16 @@
   }
   .js-wishlist-toggle.active .wish-heart path{ fill:#dc3545; stroke:#dc3545; }
   .js-wishlist-toggle:active .wish-heart{ transform: scale(0.95); }
+
+  /* Smooth horizontal scroll */
+.overflow-auto::-webkit-scrollbar {
+    height: 8px;
+}
+.overflow-auto::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.2);
+    border-radius: 4px;
+}
+
 </style>
 @endpush
 
@@ -93,7 +103,16 @@
 <h4>Reviews</h4>
 
 {{-- Show average rating --}}
-<p>Average Rating: {{ number_format($product->averageRating(), 1) }}/5</p>
+@php $avg = round($product->averageRating(), 1); @endphp
+<div class="mb-2">
+    <span class="fw-semibold">Average Rating:</span>
+    <span class="text-warning">
+        @for ($i = 1; $i <= 5; $i++)
+            <i class="fa{{ $i <= $avg ? 's' : 'r' }} fa-star"></i>
+        @endfor
+    </span>
+    <small>({{ $avg }}/5)</small>
+</div>
 
 {{-- Review Form --}}
 @auth
@@ -122,7 +141,11 @@
     @foreach ($product->reviews()->latest()->get() as $review)
         <div class="mb-3 border-bottom pb-2 review" id="review-{{ $review->id }}">
             <strong>{{ $review->user->name }}</strong>
-            <span class="text-warning ms-2">Rating: {{ $review->rating }}/5</span>
+        <span class="text-warning ms-2">
+            @for ($i = 1; $i <= 5; $i++)
+                <i class="fa{{ $i <= $review->rating ? 's' : 'r' }} fa-star"></i>
+            @endfor
+        </span>
             <p>{{ $review->comment }}</p>
 
             @if (Auth::check() && $review->user_id === auth()->id())
@@ -137,50 +160,51 @@
     @endforeach
 </div>
 
-  {{-- Related products --}}
-  @if(isset($related) && $related->count())
-    <hr class="my-4">
+ {{-- Related Products --}}
+@if(isset($related) && $related->count())
+<div class="mt-5">
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <h2 class="h5 m-0">Related products</h2>
-      @if($product->category)
-        <a href="{{ route('products.filter', $product->category->slug) }}" class="small">See more</a>
-      @endif
+        <h4 class="m-0">Related Products</h4>
+        @if($product->category)
+            <a href="{{ route('products.filter', $product->category->slug) }}" class="small">See more</a>
+        @endif
     </div>
 
-    <div class="row g-3">
-      @foreach($related as $rp)
-        @php
-          $img = $rp->image ? asset('storage/'.$rp->image) : 'https://via.placeholder.com/600x400';
-          $active = in_array((int)$rp->id, $wishlistIds, true);
-        @endphp
-        <div class="col-6 col-md-4 col-lg-3 col-xl-2">
-          <div class="card h-100 border-0 shadow-sm">
-            <div class="position-relative">
-              <a href="{{ route('products.show', $rp->slug) }}" class="d-block">
-                <img src="{{ $img }}" alt="{{ $rp->name }}" class="card-img-top" style="aspect-ratio:4/3;object-fit:cover;">
-              </a>
-              <button
-                class="btn btn-light shadow position-absolute top-0 end-0 m-2 js-wishlist-toggle {{ $active ? 'active' : '' }}"
-                data-product-id="{{ $rp->id }}"
-                aria-pressed="{{ $active ? 'true' : 'false' }}"
-                type="button"
-                title="Add to wishlist"
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" class="wish-heart" aria-hidden="true">
-                  <path d="M12.001 20.727s-7.2-4.373-9.6-8.182C.733 10.072 2.23 6.545 5.4 6.545c2.127 0 3.164 1.309 3.6 2.182.436-.873 1.473-2.182 3.6-2.182 3.17 0 4.666 3.527 3 6-2.4 3.809-9.6 8.182-9.6 8.182z"/>
-                </svg>
-              </button>
+    <div class="overflow-auto" style="white-space: nowrap; padding-bottom: 1rem;">
+        @foreach($related as $rp)
+            @php
+                $img = $rp->image_url ?? asset('storage/products/default-image.jpg');
+                $active = in_array((int)$rp->id, $wishlistIds, true);
+            @endphp
+            <div class="card d-inline-block me-3" style="width: 18%; min-width: 200px;">
+                <div class="position-relative">
+                    <a href="{{ route('products.show', $rp->slug) }}">
+                        <img src="{{ $img }}" alt="{{ $rp->title }}" class="card-img-top" style="aspect-ratio:4/3; object-fit:cover;">
+                    </a>
+                    <button
+                        class="btn btn-light shadow position-absolute top-0 end-0 m-2 js-wishlist-toggle {{ $active ? 'active' : '' }}"
+                        data-product-id="{{ $rp->id }}"
+                        aria-pressed="{{ $active ? 'true' : 'false' }}"
+                        type="button"
+                        title="Add to wishlist"
+                    >
+                        <svg width="22" height="22" viewBox="0 0 24 24" class="wish-heart" aria-hidden="true">
+                            <path d="M12.001 20.727s-7.2-4.373-9.6-8.182C.733 10.072 2.23 6.545 5.4 6.545c2.127 0 3.164 1.309 3.6 2.182.436-.873 1.473-2.182 3.6-2.182 3.17 0 4.666 3.527 3 6-2.4 3.809-9.6 8.182-9.6 8.182z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="card-body p-2">
+                    <div class="small text-muted mb-1">{{ optional($rp->category)->name ?? '—' }}</div>
+                    <div class="fw-semibold">{{ \Illuminate\Support\Str::limit($rp->title, 40) }}</div>
+                    <div class="mt-1">₹{{ number_format($rp->price, 2) }}</div>
+                </div>
             </div>
-            <div class="card-body">
-              <div class="small text-muted mb-1">{{ optional($rp->category)->name ?? '—' }}</div>
-              <div class="fw-semibold">{{ \Illuminate\Support\Str::limit($rp->title, 40) }}</div>
-              <div class="mt-1">₹{{ number_format($rp->price, 2) }}</div>
-            </div>
-          </div>
-        </div>
-      @endforeach
+        @endforeach
     </div>
-  @endif
+</div>
+@endif
+@include('partials.recently-viewed')
+
 
 </div>
 @endsection
@@ -264,7 +288,11 @@ document.getElementById('review-form')?.addEventListener('submit', async functio
             const html = `
                 <div class="mb-3 border-bottom pb-2 review" id="review-${data.review.id}">
                     <strong>${data.review.user_name}</strong>
-                    <span class="text-warning ms-2">Rating: ${data.review.rating}/5</span>
+                <span class="text-warning ms-2">
+                    ${[1,2,3,4,5].map(i => 
+                        `<i class="fa${i <= data.review.rating ? 's' : 'r'} fa-star"></i>`
+                    ).join('')}
+                </span>
                     <p>${data.review.comment ?? ''}</p>
                 </div>
             `;

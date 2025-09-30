@@ -31,8 +31,12 @@ class ReviewController extends Controller
     }
 
     $review = Review::updateOrCreate(
-        ['user_id' => Auth::id(), 'product_id' => $product->id],
-        ['rating' => $request->rating, 'comment' => $request->comment]
+        ['user_id' => Auth::id(), 
+        'product_id' => $product->id,
+    ],
+        ['rating' => $request->rating, 
+        'comment' => $request->comment,
+        ]
     );
 
     return response()->json([

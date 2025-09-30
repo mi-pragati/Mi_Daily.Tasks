@@ -51,14 +51,47 @@ class AdminProductController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.products.index', compact('products', 'productCategories'));
+              // Recently viewed products
+            $sessionKey = auth()->check() ? 'recently_viewed_user_' . auth()->id() : 'recently_viewed_guest';
+            $recentProducts = session($sessionKey, []);
+
+        return view('admin.products.index', compact('products', 'productCategories', 'recentProducts'));
     }
+
+    // Clear recently viewed
+public function clearRecentlyViewed()
+{
+    $sessionKey = auth()->check()
+        ? 'recently_viewed_user_' . auth()->id()
+        : 'recently_viewed_guest';
+
+    session()->forget($sessionKey);
+
+    return redirect()->route('admin.products.index')->with('status', 'Recently viewed history cleared.');
+}
 
     // Show single product details
     public function show(Product $product)
-    {
-        return view('admin.products.show', compact('product'));
-    }
+{
+    $sessionKey = auth()->check() ? 'recently_viewed_user_' . auth()->id() : 'recently_viewed_guest';
+    $recentProducts = session($sessionKey, []);
+
+    // Use product ID as key to prevent duplicates
+    $recentProducts[$product->id] = [
+        'id'    => $product->id,
+        'title' => $product->title,
+        'image' => $product->image,
+        'price' => $product->price,
+        'slug'  => $product->slug,
+    ];
+
+    // Keep only last 10 viewed products
+    $recentProducts = array_slice($recentProducts, -10, 10, true);
+
+    session([$sessionKey => $recentProducts]);
+
+    return view('admin.products.show', compact('product'));
+}
 
    public function showCategoryProducts(ProductCategory $category, Request $request)
 {

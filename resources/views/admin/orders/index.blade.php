@@ -11,34 +11,39 @@ use App\Models\Order;
     <h1>All Orders</h1>
 
     {{-- 🔍 Search & Status Filters --}}
-    <div class="card mb-3 p-3 shadow-sm">
-        <form method="GET" action="{{ route('admin.orders.index') }}" class="row g-2 align-items-center">
-            {{-- Search --}}
-            <div class="col-md-4">
-                <input type="text" id="search" name="search" class="form-control form-control-sm"
-                       value="{{ request('search') }}"
-                       placeholder="Order ID, Name, Email, Phone">
-            </div>
+<div class="card mb-3 p-3 shadow-sm">
+    <form method="GET" action="{{ route('admin.orders.index') }}" class="row g-2 align-items-center" id="filterForm">
+        
+        {{-- Search --}}
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control form-control-sm"
+                   value="{{ request('search') }}"
+                   placeholder="Order ID, Name, Email, Phone">
+        </div>
 
-            {{-- Status --}}
-            <div class="col-md-3">
-                <select id="status" name="status" class="form-select form-select-sm">
-                    <option value="">All</option>
-                    <option value="{{ Order::STATUS_PENDING }}" {{ request('status') == Order::STATUS_PENDING ? 'selected' : '' }}>
-                        Pending
-                    </option>
-                    <option value="{{ Order::STATUS_COMPLETED }}" {{ request('status') == Order::STATUS_COMPLETED ? 'selected' : '' }}>
-                        Completed
-                    </option>
-                </select>
-            </div>
+        {{-- Status --}}
+        <div class="col-md-3">
+            <select name="status" class="form-select form-select-sm">
+                <option value="">All</option>
+                <option value="{{ Order::STATUS_PENDING }}" {{ request('status') == Order::STATUS_PENDING ? 'selected' : '' }}>
+                    Pending
+                </option>
+                <option value="{{ Order::STATUS_COMPLETED }}" {{ request('status') == Order::STATUS_COMPLETED ? 'selected' : '' }}>
+                    Completed
+                </option>
+            </select>
+        </div>
 
-            {{-- Submit --}}
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
-            </div>
-        </form>
-    </div>
+        {{-- Buttons --}}
+        <div class="col-md-5 d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm w-auto">Filter</button>
+
+            {{-- Export CSV --}}
+            <a href="{{ route('admin.orders.export', request()->query()) }}" 
+               class="btn btn-success btn-sm w-auto">Export CSV</a>
+        </div>
+    </form>
+</div>
 
     <table class="table table-bordered table-striped">
         <thead>

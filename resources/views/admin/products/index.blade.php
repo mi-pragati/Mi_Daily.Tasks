@@ -15,10 +15,12 @@
         <a href="{{ route('admin.products.create') }}" class="btn btn-primary">Add Product</a>
     </div>
 
+    {{-- Status message --}}
     @if(session('status'))
         <div class="alert alert-success mb-3">{{ session('status') }}</div>
     @endif
 
+    {{-- Products Table --}}
     <table class="table table-bordered align-middle">
         <thead>
             <tr>
@@ -34,7 +36,8 @@
         </thead>
         <tbody>
             @forelse($products as $product)
-                <tr>
+                <tr style="cursor:pointer;" 
+                 onclick="window.location='{{ route('admin.products.show', $product) }}'">
                     <td>{{ $product->id }}</td>
                     <td style="width:120px">
                         <img src="{{ $product->image_url }}" alt="{{ $product->title ?? $product->name }}" class="img-fluid rounded" style="max-height:80px">
